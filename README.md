@@ -1,12 +1,12 @@
 # Inkplate 6 weather station dashboard
 
-<img src="https://github.com/kjordahl/inkplate6-weather-dashboard/blob/main/images/example.jpg" width="400">
-
 This project uses an e-paper display and [ESPHome](https://esphome.io/index.html)
 to display a real-time weather dashboard. I used an
 [Inkplate 6](https://soldered.com/product/soldered-inkplate-6-6-e-paper-board)
 from [Soldered](https://soldered.com), but any display supported by
 ESPHome should be very similar.
+
+<img src="https://github.com/kjordahl/inkplate6-weather-dashboard/blob/main/images/example.jpg" width="400">
 
 ## Requirements
 

@@ -1,6 +1,10 @@
 esphome:
   name: inkplate6
   friendly_name: Inkplate6
+  on_boot:
+    priority: 100
+    then:
+      - logger.log: "Booting..."
 
 esp32:
   board: esp-wrover-kit
@@ -14,9 +18,7 @@ globals:
     initial_value: "false"
 
 substitutions:
-  run_time: 1min
   sleep_time: 5min
-  night_sleep_time: 1h
 
 i2c:
 
@@ -263,7 +265,7 @@ display:
   id: inkplate_display
   greyscale: false
   partial_updating: true
-  update_interval: 5min
+  update_interval: never
   full_update_every: 12
   model: inkplate_6_v2
   rotation: 270°
@@ -398,6 +400,5 @@ display:
     it.strftime(10, 795, id(font_roboto_28), COLOR_OFF, TextAlign::BOTTOM_LEFT, "Updated %d %b %Y %H:%M %Z", id(esptime).now());
 
 deep_sleep:
-  run_duration: ${run_time}
   sleep_duration: ${sleep_time}
   id: deep_sleep_1

@@ -1,0 +1,403 @@
+esphome:
+  name: inkplate6
+  friendly_name: Inkplate6
+
+esp32:
+  board: esp-wrover-kit
+  framework:
+    type: arduino
+
+globals:
+  - id: debug_grid
+    type: bool
+    restore_value: no
+    initial_value: "false"
+
+substitutions:
+  run_time: 1min
+  sleep_time: 5min
+  night_sleep_time: 1h
+
+i2c:
+
+# Enable logging
+logger:
+  level: DEBUG
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret inkplate6_key
+
+ota:
+  password: !secret inkplate6_pw
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  manual_ip:
+      static_ip: !secret inkplate6_ip
+      gateway: 192.168.1.1
+      subnet: 255.255.255.0
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Inkplate6 Fallback Hotspot"
+    password: !secret inkplate6_fallback_pw
+
+captive_portal:
+
+binary_sensor:
+  - platform: status
+    name: "Node Status"
+    id: system_status
+  - platform: homeassistant
+    entity_id: binary_sensor.forecast_daytime
+    id: forecast_daytime
+    publish_initial_state: True
+
+font:
+  - file: "gfonts://Roboto"
+    id: font_roboto_96
+    size: 96
+  - file: "gfonts://Roboto"
+    id: font_roboto_72
+    size: 72
+  - file: "gfonts://Roboto"
+    id: font_roboto_48
+    size: 48
+  - file: "gfonts://Roboto"
+    id: font_roboto_36
+    size: 36
+  - file: "gfonts://Roboto"
+    id: font_roboto_28
+    size: 28
+  - file: "gfonts://Roboto"
+    id: font_roboto_128
+    size: 128
+  # Include Weather Icons font from https://erikflowers.github.io/weather-icons
+  - file: 'fonts/weathericons-regular-webfont.ttf'
+    id: font_wi_96
+    size: 96
+    glyphs: &wi-weather-glyphs
+      - "\uf013" # wi-cloudy
+      - "\uf014" # wi-fog
+      - "\uf015" # wi-hail
+      - "\uf0b6" # wi-day-haze
+      - "\uf073" # wi-hurricane
+      - "\uf016" # wi-lightning
+      - "\uf01e" # wi-thunderstorm
+      - "\uf02e" # wi-night-clear
+      - "\uf086" # wi-night-alt-cloudy
+      - "\uf002" # wi-day-cloudy
+      - "\uf005" # wi-day-lightning
+      - "\uf008" # wi-day-rain
+      - "\uf00a" # wi-day-snow
+      - "\uf006" # wi-day-rain-mix
+      - "\uf019" # wi-rain
+      - "\uf01b" # wi-snow
+      - "\uf017" # wi-rain-mix
+      - "\uf00d" # wi-day-sunny
+      - "\uf052" # wi-sunset
+      - "\uf051" # wi-sunrise
+      - "\uf056" # wi-tornado
+      - "\uf050" # wi-strong-windy
+      - "\uf012" # wi-cloudy-windy
+      - "\uf07b" # wi-na
+      - "\uf0b1" # wi-wind-direction
+      - "\uf07a" # wi-humidity
+  - file: 'fonts/weathericons-regular-webfont.ttf'
+    id: font_wi_48
+    size: 48
+    glyphs: *wi-weather-glyphs
+  - file: 'fonts/weathericons-regular-webfont.ttf'
+    id: font_wi_128
+    size: 128
+    glyphs: *wi-weather-glyphs
+  - file: 'fonts/materialdesignicons-webfont.ttf'
+    id: font_mdi_72
+    size: 72
+    glyphs: &mdi-weather-glyphs
+      - "\U000F0E03" # mdi-thermometer-chevron-up
+      - "\U000F0E02" # mdi-thermometer-chevron-down
+      - "\U000F15FA" # mdi-windsock
+      - "\U000F058E" # mdi-water-percent
+      - "\U000F029A" # mdi-gauge
+      - "\U000F1587" # mdi-face-mask-outline
+      - "\U000F185A" # mdi-waves-arrow-right
+
+time:
+  - platform: homeassistant
+    id: esptime
+
+switch:
+  - platform: restart
+    name: "Inkplate Reboot"
+    id: reboot
+  - platform: gpio
+    id: battery_read_mosfet
+    pin:
+      pca6416a: pca6416a_hub
+      number: 9
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+
+text_sensor:
+  - platform: homeassistant
+    id: air_quality
+    entity_id: sensor.air_quality
+  - platform: homeassistant
+    id: current_weather
+    entity_id: weather.kgeg_daynight
+  - platform: homeassistant
+    entity_id: sensor.forecast_condition_0
+    id: forecast0
+  - platform: homeassistant
+    entity_id: sensor.forecast_condition_1
+    id: forecast1
+  - platform: homeassistant
+    entity_id: sensor.forecast_condition_2
+    id: forecast2
+
+sensor:
+  - platform: homeassistant
+    id: temperature_outside    
+    entity_id: sensor.gw1100b_outdoor_temperature
+    on_value:
+      then:
+        - logger.log: "Data received."
+        - script.execute: data_received
+  - platform: homeassistant
+    id: humidity
+    entity_id: sensor.gw1100b_humidity
+  - platform: homeassistant
+    id: pressure
+    entity_id: sensor.gw1100b_relative_pressure
+  - platform: homeassistant
+    id: high_temperature
+    entity_id: sensor.24_hour_high_temperature
+  - platform: homeassistant
+    id: low_temperature
+    entity_id: sensor.24_hour_low_temperature
+  - platform: homeassistant
+    id: aqi    
+    entity_id: sensor.air_quality_index
+  - platform: homeassistant
+    entity_id: sensor.forecast_temperature_0
+    id: forecast_temp0
+  - platform: homeassistant
+    entity_id: sensor.forecast_temperature_1
+    id: forecast_temp1
+  - platform: homeassistant
+    entity_id: sensor.forecast_temperature_2
+    id: forecast_temp2
+  - platform: homeassistant
+    id: wind_speed
+    entity_id: weather.kgeg_daynight
+    attribute: wind_speed
+  - platform: homeassistant
+    entity_id: sensor.spokane_river_flow
+    id: river_flow
+  - platform: adc
+    id: battery_adc
+    update_interval: never
+    attenuation: 11db
+    pin: 35
+  - platform: template
+    name: "Battery Voltage"
+    id: battery_voltage
+    unit_of_measurement: "V"
+    accuracy_decimals: 3
+    device_class: voltage
+    entity_category: diagnostic
+    state_class: measurement
+    update_interval: 60s
+    lambda: |-
+      id(battery_read_mosfet).turn_on();
+      delay(1);
+      float adc = id(battery_adc).sample();
+      id(battery_read_mosfet).turn_off();
+      return adc;
+    filters:
+      - multiply: 2
+  - platform: copy
+    name: "Battery Percentage"
+    id: battery_percentage
+    source_id: battery_voltage
+    unit_of_measurement: "percent"
+    device_class: battery
+    state_class: measurement
+    filters:
+      - calibrate_linear:
+         method: least_squares
+         datapoints:
+          - 3.35 -> 0.0
+          - 4.22 -> 100.0
+      - median:
+          window_size: 5
+      - clamp:
+          min_value: 0
+          max_value: 100
+
+pca6416a:
+  - id: pca6416a_hub
+    address: 0x20
+
+script:
+  - id: data_received
+    then:
+      - component.update: inkplate_display
+      - script.execute: enter_sleep
+  - id: enter_sleep
+    then:
+      - logger.log: "Sleeping for ${sleep_time}"
+      #- deep_sleep.prevent: deep_sleep_1
+      - deep_sleep.enter:
+          id: deep_sleep_1
+          sleep_duration: ${sleep_time}
+
+display:
+- platform: inkplate6
+  id: inkplate_display
+  greyscale: false
+  partial_updating: true
+  update_interval: 5min
+  full_update_every: 12
+  model: inkplate_6_v2
+  rotation: 270°
+  ckv_pin: 32
+  sph_pin: 33
+  gmod_pin:
+    pca6416a: pca6416a_hub
+    number: 1
+  gpio0_enable_pin:
+    pca6416a: pca6416a_hub
+    number: 8
+  oe_pin:
+    pca6416a: pca6416a_hub
+    number: 0
+  spv_pin:
+    pca6416a: pca6416a_hub
+    number: 2
+  powerup_pin:
+    pca6416a: pca6416a_hub
+    number: 4
+  wakeup_pin:
+    pca6416a: pca6416a_hub
+    number: 3
+  vcom_pin:
+    pca6416a: pca6416a_hub
+    number: 5
+
+  lambda: |-
+    std::map<std::string, std::string> weather_icon_map
+        {
+          {"clear-night", "\uf02e"},
+          {"cloudy", "\uf013"},
+          {"cloudy-alert", "\uf013!"},       // no alert equivalent
+          {"cloudy-arrow-right", "\uf013"},  // no equivalent in Weather Icons font
+          {"fog", "\uf014"},
+          {"hail", "\uf015"},
+          {"hazy", "\uf0b6"},
+          {"hurricane", "\uf073"},
+          {"lightning", "\uf016"},
+          {"lightning-rainy", "\uf01e"},
+          {"night", "\uf02e"},
+          {"night-partly-cloudy", "\uf086"},
+          {"partlycloudy", "\uf002"},
+          {"partly-lightning", "\uf005"},
+          {"partly-rainy", "\uf008"},
+          {"partly-snowy", "\uf00a"},
+          {"partly-snowy-rainy", "\uf006"},
+          {"pouring", "\uf019"},
+          {"rainy", "\uf019"},
+          {"snowy", "\uf01b"},
+          {"snowy-heavy", "\uf01b"},
+          {"snowy-rainy", "\uf017"},
+          {"sunny", "\uf00d"},
+          {"sunny-alert", "\uf00d!"},        // no alert equivalent
+          {"sunny-off", "\uf00d"},          // not sure what this one means, no equivalent in WI font
+          {"sunset", "\uf052"},
+          {"sunset-down", "\uf052"},
+          {"sunset-up", "\uf051"},
+          {"tornado", "\uf056"},
+          {"unknown", "\uf07b"},
+          {"windy", "\uf050"},
+          {"windy-variant", "\uf012"},
+          {"", "\uf07b"},                   // explicitly treat empty as N/A
+        };
+
+    std::map<std::string, std::string> mdi_icon_map
+        {
+          {"high-temp", "\U000F0E03"},
+          {"low-temp", "\U000F0E02"},
+          {"wind", "\U000F15FA"},
+          {"humidity", "\U000F058E"},
+          {"pressure", "\U000F029A"},
+          {"air-quality", "\U000F1587"},
+          {"river-flow", "\U000F185A"},
+        };
+
+    it.fill(COLOR_ON);
+
+    if (id(debug_grid)) {
+      // regular grid for debugging layout
+      const int spacing = 20;
+      int c;
+      for (c=0; c<600; c+=spacing) {
+        it.vertical_line(c, 0, 800, COLOR_OFF);
+      }
+      for (c=0; c<800; c+=spacing) {
+        it.horizontal_line(0, c, 800, COLOR_OFF);
+      }
+    }
+
+    // it.print(150, 5, font_roboto_36, COLOR_OFF, TextAlign::TOP_CENTER, "Current");
+    it.printf(250, 30, id(font_roboto_128), COLOR_OFF, TextAlign::TOP_LEFT, "%.0f°F", id(temperature_outside).state);
+    it.print(50, 25, id(font_wi_128), COLOR_OFF, TextAlign::TOP_LEFT, weather_icon_map[id(current_weather).state.c_str()].c_str());
+
+    it.print(335, 240, id(font_mdi_72), COLOR_OFF, TextAlign::CENTER_LEFT, mdi_icon_map["high-temp"].c_str());
+    it.print(335, 320, id(font_mdi_72), COLOR_OFF, TextAlign::CENTER_LEFT, mdi_icon_map["low-temp"].c_str());
+    it.print(335, 400, id(font_mdi_72), COLOR_OFF, TextAlign::CENTER_LEFT, mdi_icon_map["wind"].c_str());
+    it.print(335, 480, id(font_mdi_72), COLOR_OFF, TextAlign::CENTER_LEFT, mdi_icon_map["humidity"].c_str());
+    it.print(335, 560, id(font_mdi_72), COLOR_OFF, TextAlign::CENTER_LEFT, mdi_icon_map["pressure"].c_str());
+    it.rectangle(335, 615, 70, 50, COLOR_OFF);
+    it.print(340, 640, id(font_roboto_36), COLOR_OFF, TextAlign::CENTER_LEFT, "AQI");
+    it.print(335, 720, id(font_mdi_72), COLOR_OFF, TextAlign::CENTER_LEFT, mdi_icon_map["river-flow"].c_str());
+    // it.print(335, 660, id(font_mdi_72), COLOR_OFF, TextAlign::CENTER_LEFT, mdi_icon_map["air-quality"].c_str());
+    it.printf(420, 240, id(font_roboto_48), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f°F", id(high_temperature).state);
+    it.printf(420, 320, id(font_roboto_48), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f°F", id(low_temperature).state);
+    it.printf(420, 400, id(font_roboto_48), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f mph", id(wind_speed).state);
+    it.printf(420, 480, id(font_roboto_48), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f%%", id(humidity).state);
+    it.printf(420, 560, id(font_roboto_48), COLOR_OFF, TextAlign::CENTER_LEFT, "%.2f in", id(pressure).state);
+    it.printf(420, 640, id(font_roboto_48), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f %s", id(aqi).state, id(air_quality).state.c_str());
+    it.printf(415, 720, id(font_roboto_48), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f cfs", id(river_flow).state);
+    //    it.printf(475, 300, id(font_roboto_48), COLOR_OFF, TextAlign::TOP_LEFT, "%s", id(air_quality).state.c_str());
+
+    if (id(forecast_daytime).state) {
+      it.print(50, 260, font_roboto_36, COLOR_OFF, TextAlign::BOTTOM_LEFT, "Today");
+      it.print(50, 430, font_roboto_36, COLOR_OFF, TextAlign::BOTTOM_LEFT, "Tonight");
+      it.print(50, 600, font_roboto_36, COLOR_OFF, TextAlign::BOTTOM_LEFT, "Tomorrow");
+    } else {
+      // TODO: also set icons based on day/night
+      it.print(50, 260, font_roboto_36, COLOR_OFF, TextAlign::BOTTOM_LEFT, "Tonight");
+      it.print(50, 430, font_roboto_36, COLOR_OFF, TextAlign::BOTTOM_LEFT, "Tomorrow");
+      it.print(50, 600, font_roboto_36, COLOR_OFF, TextAlign::BOTTOM_LEFT, "Tomorrow night");
+    }
+
+    it.printf(160, 330, id(font_roboto_72), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f°F", id(forecast_temp0).state);
+    it.print(25, 330, id(font_wi_96), COLOR_OFF, TextAlign::CENTER_LEFT, weather_icon_map[id(forecast0).state.c_str()].c_str());
+    it.printf(160, 500, id(font_roboto_72), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f°F", id(forecast_temp1).state);
+    it.print(25, 500, id(font_wi_96), COLOR_OFF, TextAlign::CENTER_LEFT, weather_icon_map[id(forecast1).state.c_str()].c_str());
+    it.printf(160, 670, id(font_roboto_72), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f°F", id(forecast_temp2).state);
+    it.print(25, 670, id(font_wi_96), COLOR_OFF, TextAlign::CENTER_LEFT, weather_icon_map[id(forecast2).state.c_str()].c_str());
+
+    it.printf(590, 795, id(font_roboto_36), COLOR_OFF, TextAlign::BOTTOM_RIGHT, "%.0f%%", id(battery_percentage).state);
+    it.strftime(10, 795, id(font_roboto_28), COLOR_OFF, TextAlign::BOTTOM_LEFT, "Updated %d %b %Y %H:%M %Z", id(esptime).now());
+
+deep_sleep:
+  run_duration: ${run_time}
+  sleep_duration: ${sleep_time}
+  id: deep_sleep_1

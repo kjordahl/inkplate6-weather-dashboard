@@ -25,11 +25,10 @@ weather integrations in Home Assistant for weather data.
 This version makes use of 3 different fonts. Two of them (Roboto and
 [MDI](https://pictogrammers.com/library/mdi/)) are fetched remotely
 at compile time. The third,
-[Weather Icons](https://erikflowers.github.io/weather-icons/), should
-be downloaded from the
-[source](https://github.com/erikflowers/weather-icons/blob/master/font/weathericons-regular-webfont.ttf)
-and placed in the fonts subdirectory on your ESPHome instance. It is
-possible to use weather icons from MDI instead, and eliminate the
+[Weather Icons](https://erikflowers.github.io/weather-icons/), 
+is included in the fonts directory of this repository,
+and will need to be placed in the fonts subdirectory on your ESPHome instance.
+It is possible to use weather icons from MDI instead, and eliminate the
 dependency on the Weather Icons font, but I preferred the glyphs
 available there.
 

@@ -1,6 +1,6 @@
 # Inkplate 6 weather station dashboard
 
-![Epaper display in a black plastic frame, with sun icon, 71°F at the top](/images/example.jpg)
+<img src="https://github.com/kjordahl/inkplate6-weather-dashboard/blob/main/images/example.jpg" width="400">
 
 This project uses an e-paper display and [ESPHome](https://esphome.io/index.html)
 to display a real-time weather dashboard. I used an

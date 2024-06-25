@@ -390,11 +390,17 @@ display:
       it.print(50, 600, font_roboto_36, COLOR_OFF, TextAlign::BOTTOM_LEFT, "Tomorrow night");
     }
 
-    it.printf(160, 330, id(font_roboto_72), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f°F", id(forecast_temp0).state);
+    if (isfinite(id(forecast_temp0).state)) {
+        it.printf(160, 330, id(font_roboto_72), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f°F", id(forecast_temp0).state);
+      }
     it.print(25, 330, id(font_wi_96), COLOR_OFF, TextAlign::CENTER_LEFT, weather_icon_map[id(forecast0).state.c_str()].c_str());
-    it.printf(160, 500, id(font_roboto_72), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f°F", id(forecast_temp1).state);
+    if (isfinite(id(forecast_temp1).state)) {
+      it.printf(160, 500, id(font_roboto_72), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f°F", id(forecast_temp1).state);
+      }
     it.print(25, 500, id(font_wi_96), COLOR_OFF, TextAlign::CENTER_LEFT, weather_icon_map[id(forecast1).state.c_str()].c_str());
-    it.printf(160, 670, id(font_roboto_72), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f°F", id(forecast_temp2).state);
+    if (isfinite(id(forecast_temp2).state)) {
+      it.printf(160, 670, id(font_roboto_72), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f°F", id(forecast_temp2).state);
+      }
     it.print(25, 670, id(font_wi_96), COLOR_OFF, TextAlign::CENTER_LEFT, weather_icon_map[id(forecast2).state.c_str()].c_str());
 
     it.printf(590, 795, id(font_roboto_36), COLOR_OFF, TextAlign::BOTTOM_RIGHT, "%.0f%%", id(battery_percentage).state);

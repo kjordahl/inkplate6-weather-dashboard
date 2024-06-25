@@ -329,6 +329,7 @@ display:
           {"windy", "\uf050"},
           {"windy-variant", "\uf012"},
           {"", "\uf07b"},                   // explicitly treat empty as N/A
+          {"unavailable", "\uf07b"},
         };
 
     std::map<std::string, std::string> mdi_icon_map

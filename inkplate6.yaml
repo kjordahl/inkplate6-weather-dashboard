@@ -166,17 +166,20 @@ text_sensor:
 sensor:
   - platform: homeassistant
     id: temperature_outside    
-    entity_id: sensor.gw1100b_outdoor_temperature
+    entity_id: weather.local
+    attribute: temperature
     on_value:
       then:
         - logger.log: "Data received."
         - script.execute: data_received
   - platform: homeassistant
     id: humidity
-    entity_id: sensor.gw1100b_humidity
+    entity_id: weather.local
+    attribute: pressure
   - platform: homeassistant
     id: pressure
-    entity_id: sensor.gw1100b_relative_pressure
+    entity_id: weather.local
+    attribute: pressure
   - platform: homeassistant
     id: high_temperature
     entity_id: sensor.24_hour_high_temperature

@@ -152,7 +152,7 @@ text_sensor:
     entity_id: sensor.air_quality
   - platform: homeassistant
     id: current_weather
-    entity_id: weather.kgeg_daynight
+    entity_id: weather.local
   - platform: homeassistant
     entity_id: sensor.forecast_condition_0
     id: forecast0
@@ -197,7 +197,7 @@ sensor:
     id: forecast_temp2
   - platform: homeassistant
     id: wind_speed
-    entity_id: weather.kgeg_daynight
+    entity_id: weather.local
     attribute: wind_speed
   - platform: homeassistant
     entity_id: sensor.spokane_river_flow

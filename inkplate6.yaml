@@ -162,6 +162,9 @@ text_sensor:
   - platform: homeassistant
     entity_id: sensor.forecast_condition_2
     id: forecast2
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_2
+    id: day2
 
 sensor:
   - platform: homeassistant
@@ -193,11 +196,20 @@ sensor:
     entity_id: sensor.forecast_temperature_0
     id: forecast_temp0
   - platform: homeassistant
+    entity_id: sensor.forecast_low_0
+    id: forecast_low0
+  - platform: homeassistant
     entity_id: sensor.forecast_temperature_1
     id: forecast_temp1
   - platform: homeassistant
+    entity_id: sensor.forecast_low_1
+    id: forecast_low1
+  - platform: homeassistant
     entity_id: sensor.forecast_temperature_2
     id: forecast_temp2
+  - platform: homeassistant
+    entity_id: sensor.forecast_low_2
+    id: forecast_low2
   - platform: homeassistant
     id: wind_speed
     entity_id: weather.local
@@ -382,27 +394,29 @@ display:
     it.printf(415, 720, id(font_roboto_48), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f cfs", id(river_flow).state);
     //    it.printf(475, 300, id(font_roboto_48), COLOR_OFF, TextAlign::TOP_LEFT, "%s", id(air_quality).state.c_str());
 
-    if (id(forecast_daytime).state) {
-      it.print(50, 260, font_roboto_36, COLOR_OFF, TextAlign::BOTTOM_LEFT, "Today");
-      it.print(50, 430, font_roboto_36, COLOR_OFF, TextAlign::BOTTOM_LEFT, "Tonight");
-      it.print(50, 600, font_roboto_36, COLOR_OFF, TextAlign::BOTTOM_LEFT, "Tomorrow");
-    } else {
-      // TODO: also set icons based on day/night
-      it.print(50, 260, font_roboto_36, COLOR_OFF, TextAlign::BOTTOM_LEFT, "Tonight");
-      it.print(50, 430, font_roboto_36, COLOR_OFF, TextAlign::BOTTOM_LEFT, "Tomorrow");
-      it.print(50, 600, font_roboto_36, COLOR_OFF, TextAlign::BOTTOM_LEFT, "Tomorrow night");
-    }
+    it.print(50, 260, font_roboto_36, COLOR_OFF, TextAlign::BOTTOM_LEFT, "Today");
+    it.print(50, 430, font_roboto_36, COLOR_OFF, TextAlign::BOTTOM_LEFT, "Tomorrow");
+    it.printf(50, 600, font_roboto_36, COLOR_OFF, TextAlign::BOTTOM_LEFT, "%s", id(day2).state.c_str());
 
     if (isfinite(id(forecast_temp0).state)) {
-        it.printf(160, 330, id(font_roboto_72), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f°F", id(forecast_temp0).state);
+        it.printf(180, 320, id(font_roboto_48), COLOR_OFF, TextAlign::BOTTOM_LEFT, "%.0f°F", id(forecast_temp0).state);
+      }
+    if (isfinite(id(forecast_low0).state)) {
+        it.printf(180, 320, id(font_roboto_48), COLOR_OFF, TextAlign::TOP_LEFT, "%.0f°F", id(forecast_low0).state);
       }
     it.print(25, 330, id(font_wi_96), COLOR_OFF, TextAlign::CENTER_LEFT, weather_icon_map[id(forecast0).state.c_str()].c_str());
     if (isfinite(id(forecast_temp1).state)) {
-      it.printf(160, 500, id(font_roboto_72), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f°F", id(forecast_temp1).state);
+        it.printf(180, 490, id(font_roboto_48), COLOR_OFF, TextAlign::BOTTOM_LEFT, "%.0f°F", id(forecast_temp1).state);
+      }
+    if (isfinite(id(forecast_low1).state)) {
+        it.printf(180, 490, id(font_roboto_48), COLOR_OFF, TextAlign::TOP_LEFT, "%.0f°F", id(forecast_low1).state);
       }
     it.print(25, 500, id(font_wi_96), COLOR_OFF, TextAlign::CENTER_LEFT, weather_icon_map[id(forecast1).state.c_str()].c_str());
     if (isfinite(id(forecast_temp2).state)) {
-      it.printf(160, 670, id(font_roboto_72), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f°F", id(forecast_temp2).state);
+        it.printf(180, 660, id(font_roboto_48), COLOR_OFF, TextAlign::BOTTOM_LEFT, "%.0f°F", id(forecast_temp2).state);
+      }
+    if (isfinite(id(forecast_low2).state)) {
+        it.printf(180, 660, id(font_roboto_48), COLOR_OFF, TextAlign::TOP_LEFT, "%.0f°F", id(forecast_low2).state);
       }
     it.print(25, 670, id(font_wi_96), COLOR_OFF, TextAlign::CENTER_LEFT, weather_icon_map[id(forecast2).state.c_str()].c_str());
 

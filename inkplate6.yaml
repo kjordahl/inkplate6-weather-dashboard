@@ -165,6 +165,9 @@ text_sensor:
   - platform: homeassistant
     entity_id: sensor.forecast_day_2
     id: day2
+  - platform: homeassistant
+    entity_id: sensor.weather_alert_title
+    id: weather_alert
 
 sensor:
   - platform: homeassistant
@@ -373,6 +376,7 @@ display:
     }
 
     // it.print(150, 5, font_roboto_36, COLOR_OFF, TextAlign::TOP_CENTER, "Current");
+    it.printf(300, 1, id(font_roboto_36), COLOR_OFF, TextAlign::TOP_CENTER, "%s", id(weather_alert).state.c_str());
     it.printf(250, 30, id(font_roboto_128), COLOR_OFF, TextAlign::TOP_LEFT, "%.0f°F", id(temperature_outside).state);
     it.print(50, 25, id(font_wi_128), COLOR_OFF, TextAlign::TOP_LEFT, weather_icon_map[id(current_weather).state.c_str()].c_str());
 

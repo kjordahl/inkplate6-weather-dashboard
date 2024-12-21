@@ -18,7 +18,8 @@ globals:
     initial_value: "false"
 
 substitutions:
-  sleep_time: 5min
+  short_sleep_time: 5min
+  long_sleep_time: 60min
 
 i2c:
 
@@ -273,11 +274,19 @@ script:
       - script.execute: enter_sleep
   - id: enter_sleep
     then:
-      - logger.log: "Sleeping for ${sleep_time}"
-      #- deep_sleep.prevent: deep_sleep_1
-      - deep_sleep.enter:
-          id: deep_sleep_1
-          sleep_duration: ${sleep_time}
+      if:
+        condition:
+          lambda: "return id(esptime).now().hour < 6;"
+        then:
+          - logger.log: "Sleeping for ${long_sleep_time}"
+          - deep_sleep.enter:
+              id: deep_sleep_1
+              sleep_duration: ${long_sleep_time}
+        else:
+          - logger.log: "Sleeping for ${short_sleep_time}"
+          - deep_sleep.enter:
+              id: deep_sleep_1
+              sleep_duration: ${short_sleep_time}
 
 display:
 - platform: inkplate6
@@ -431,5 +440,5 @@ display:
     it.strftime(10, 795, id(font_roboto_28), COLOR_OFF, TextAlign::BOTTOM_LEFT, "Updated %d %b %Y %H:%M %Z", id(esptime).now());
 
 deep_sleep:
-  sleep_duration: ${sleep_time}
+  sleep_duration: ${short_sleep_time}
   id: deep_sleep_1

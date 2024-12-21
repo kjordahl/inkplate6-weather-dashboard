@@ -22,15 +22,14 @@ but you can use any sensor that HA can interact with, including
 building your own. If you don't have any sensors, you can also use
 weather integrations in Home Assistant for weather data.
 
-This version makes use of 3 different fonts. Two of them (Roboto and
-[MDI](https://pictogrammers.com/library/mdi/)) are fetched remotely
-at compile time. The third,
-[Weather Icons](https://erikflowers.github.io/weather-icons/), 
-is included in the fonts directory of this repository,
-and will need to be placed in the fonts subdirectory on your ESPHome instance.
-It is possible to use weather icons from MDI instead, and eliminate the
-dependency on the Weather Icons font, but I preferred the glyphs
-available there.
+This version makes use of 3 different fonts. Two of them,
+[MDI](https://pictogrammers.com/library/mdi/) and
+[Weather Icons](https://erikflowers.github.io/weather-icons/), are included in
+the fonts directory of this repository, and will need to be placed in
+the fonts subdirectory on your ESPHome instance.  The third, Roboto,
+is fetched remotely at compile time.  It is possible to use only weather
+icons from MDI and eliminate the dependency on the Weather
+Icons font, but I preferred the glyphs available there.
 
 ## References
 

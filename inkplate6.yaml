@@ -224,7 +224,7 @@ sensor:
   - platform: adc
     id: battery_adc
     update_interval: never
-    attenuation: 11db
+    attenuation: 12db
     pin: 35
   - platform: template
     name: "Battery Voltage"

@@ -382,73 +382,81 @@ display:
           {"river-flow", "\U000F185A"},
         };
 
-    it.fill(COLOR_ON);
+    Color color_fg = COLOR_OFF;
+    Color color_bg = COLOR_ON;
+
+    if (id(battery_voltage).state <= ${voltage_low}) {
+      color_fg = COLOR_ON;
+      color_bg = COLOR_OFF;
+    }
+
+    it.fill(color_bg);
 
     if (id(debug_grid)) {
       // regular grid for debugging layout
       const int spacing = 20;
       int c;
       for (c=0; c<600; c+=spacing) {
-        it.vertical_line(c, 0, 800, COLOR_OFF);
+        it.vertical_line(c, 0, 800, color_fg);
       }
       for (c=0; c<800; c+=spacing) {
-        it.horizontal_line(0, c, 800, COLOR_OFF);
+        it.horizontal_line(0, c, 800, color_fg);
       }
     }
 
-    // it.print(150, 5, font_roboto_36, COLOR_OFF, TextAlign::TOP_CENTER, "Current");
+    // it.print(150, 5, font_roboto_36, color_fg, TextAlign::TOP_CENTER, "Current");
     if (id(weather_alert).state != "unavailable") {
-      it.printf(300, 1, id(font_roboto_36), COLOR_OFF, TextAlign::TOP_CENTER, "%s", id(weather_alert).state.c_str());
+      it.printf(300, 1, id(font_roboto_36), color_fg, TextAlign::TOP_CENTER, "%s", id(weather_alert).state.c_str());
       }
-    it.printf(250, 30, id(font_roboto_128), COLOR_OFF, TextAlign::TOP_LEFT, "%.0f°F", id(temperature_outside).state);
-    it.print(50, 25, id(font_wi_128), COLOR_OFF, TextAlign::TOP_LEFT, weather_icon_map[id(current_weather).state.c_str()].c_str());
+    it.printf(250, 30, id(font_roboto_128), color_fg, TextAlign::TOP_LEFT, "%.0f°F", id(temperature_outside).state);
+    it.print(50, 25, id(font_wi_128), color_fg, TextAlign::TOP_LEFT, weather_icon_map[id(current_weather).state.c_str()].c_str());
 
-    it.print(335, 240, id(font_mdi_72), COLOR_OFF, TextAlign::CENTER_LEFT, mdi_icon_map["high-temp"].c_str());
-    it.print(335, 320, id(font_mdi_72), COLOR_OFF, TextAlign::CENTER_LEFT, mdi_icon_map["low-temp"].c_str());
-    it.print(335, 400, id(font_mdi_72), COLOR_OFF, TextAlign::CENTER_LEFT, mdi_icon_map["wind"].c_str());
-    it.print(335, 480, id(font_mdi_72), COLOR_OFF, TextAlign::CENTER_LEFT, mdi_icon_map["humidity"].c_str());
-    it.print(335, 560, id(font_mdi_72), COLOR_OFF, TextAlign::CENTER_LEFT, mdi_icon_map["pressure"].c_str());
-    it.rectangle(335, 615, 70, 50, COLOR_OFF);
-    it.print(340, 640, id(font_roboto_36), COLOR_OFF, TextAlign::CENTER_LEFT, "AQI");
-    it.print(335, 720, id(font_mdi_72), COLOR_OFF, TextAlign::CENTER_LEFT, mdi_icon_map["river-flow"].c_str());
-    // it.print(335, 660, id(font_mdi_72), COLOR_OFF, TextAlign::CENTER_LEFT, mdi_icon_map["air-quality"].c_str());
-    it.printf(420, 240, id(font_roboto_48), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f°F", id(high_temperature).state);
-    it.printf(420, 320, id(font_roboto_48), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f°F", id(low_temperature).state);
-    it.printf(420, 400, id(font_roboto_48), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f mph", id(wind_speed).state);
-    it.printf(420, 480, id(font_roboto_48), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f%%", id(humidity).state);
-    it.printf(420, 560, id(font_roboto_48), COLOR_OFF, TextAlign::CENTER_LEFT, "%.2f in", id(pressure).state);
-    it.printf(420, 640, id(font_roboto_48), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f %s", id(aqi).state, id(air_quality).state.c_str());
-    it.printf(415, 720, id(font_roboto_48), COLOR_OFF, TextAlign::CENTER_LEFT, "%.0f cfs", id(river_flow).state);
-    //    it.printf(475, 300, id(font_roboto_48), COLOR_OFF, TextAlign::TOP_LEFT, "%s", id(air_quality).state.c_str());
+    it.print(335, 240, id(font_mdi_72), color_fg, TextAlign::CENTER_LEFT, mdi_icon_map["high-temp"].c_str());
+    it.print(335, 320, id(font_mdi_72), color_fg, TextAlign::CENTER_LEFT, mdi_icon_map["low-temp"].c_str());
+    it.print(335, 400, id(font_mdi_72), color_fg, TextAlign::CENTER_LEFT, mdi_icon_map["wind"].c_str());
+    it.print(335, 480, id(font_mdi_72), color_fg, TextAlign::CENTER_LEFT, mdi_icon_map["humidity"].c_str());
+    it.print(335, 560, id(font_mdi_72), color_fg, TextAlign::CENTER_LEFT, mdi_icon_map["pressure"].c_str());
+    it.rectangle(335, 615, 70, 50, color_fg);
+    it.print(340, 640, id(font_roboto_36), color_fg, TextAlign::CENTER_LEFT, "AQI");
+    it.print(335, 720, id(font_mdi_72), color_fg, TextAlign::CENTER_LEFT, mdi_icon_map["river-flow"].c_str());
+    // it.print(335, 660, id(font_mdi_72), color_fg, TextAlign::CENTER_LEFT, mdi_icon_map["air-quality"].c_str());
+    it.printf(420, 240, id(font_roboto_48), color_fg, TextAlign::CENTER_LEFT, "%.0f°F", id(high_temperature).state);
+    it.printf(420, 320, id(font_roboto_48), color_fg, TextAlign::CENTER_LEFT, "%.0f°F", id(low_temperature).state);
+    it.printf(420, 400, id(font_roboto_48), color_fg, TextAlign::CENTER_LEFT, "%.0f mph", id(wind_speed).state);
+    it.printf(420, 480, id(font_roboto_48), color_fg, TextAlign::CENTER_LEFT, "%.0f%%", id(humidity).state);
+    it.printf(420, 560, id(font_roboto_48), color_fg, TextAlign::CENTER_LEFT, "%.2f in", id(pressure).state);
+    it.printf(420, 640, id(font_roboto_48), color_fg, TextAlign::CENTER_LEFT, "%.0f %s", id(aqi).state, id(air_quality).state.c_str());
+    it.printf(415, 720, id(font_roboto_48), color_fg, TextAlign::CENTER_LEFT, "%.0f cfs", id(river_flow).state);
+    //    it.printf(475, 300, id(font_roboto_48), color_fg, TextAlign::TOP_LEFT, "%s", id(air_quality).state.c_str());
 
-    it.print(50, 260, font_roboto_36, COLOR_OFF, TextAlign::BOTTOM_LEFT, "Today");
-    it.print(50, 430, font_roboto_36, COLOR_OFF, TextAlign::BOTTOM_LEFT, "Tomorrow");
-    it.printf(50, 600, font_roboto_36, COLOR_OFF, TextAlign::BOTTOM_LEFT, "%s", id(day2).state.c_str());
+    it.print(50, 260, font_roboto_36, color_fg, TextAlign::BOTTOM_LEFT, "Today");
+    it.print(50, 430, font_roboto_36, color_fg, TextAlign::BOTTOM_LEFT, "Tomorrow");
+    it.printf(50, 600, font_roboto_36, color_fg, TextAlign::BOTTOM_LEFT, "%s", id(day2).state.c_str());
 
     if (isfinite(id(forecast_temp0).state)) {
-        it.printf(180, 320, id(font_roboto_48), COLOR_OFF, TextAlign::BOTTOM_LEFT, "%.0f°F", id(forecast_temp0).state);
+        it.printf(180, 320, id(font_roboto_48), color_fg, TextAlign::BOTTOM_LEFT, "%.0f°F", id(forecast_temp0).state);
       }
     if (isfinite(id(forecast_low0).state)) {
-        it.printf(180, 320, id(font_roboto_48), COLOR_OFF, TextAlign::TOP_LEFT, "%.0f°F", id(forecast_low0).state);
+        it.printf(180, 320, id(font_roboto_48), color_fg, TextAlign::TOP_LEFT, "%.0f°F", id(forecast_low0).state);
       }
-    it.print(25, 330, id(font_wi_96), COLOR_OFF, TextAlign::CENTER_LEFT, weather_icon_map[id(forecast0).state.c_str()].c_str());
+    it.print(25, 330, id(font_wi_96), color_fg, TextAlign::CENTER_LEFT, weather_icon_map[id(forecast0).state.c_str()].c_str());
     if (isfinite(id(forecast_temp1).state)) {
-        it.printf(180, 490, id(font_roboto_48), COLOR_OFF, TextAlign::BOTTOM_LEFT, "%.0f°F", id(forecast_temp1).state);
+        it.printf(180, 490, id(font_roboto_48), color_fg, TextAlign::BOTTOM_LEFT, "%.0f°F", id(forecast_temp1).state);
       }
     if (isfinite(id(forecast_low1).state)) {
-        it.printf(180, 490, id(font_roboto_48), COLOR_OFF, TextAlign::TOP_LEFT, "%.0f°F", id(forecast_low1).state);
+        it.printf(180, 490, id(font_roboto_48), color_fg, TextAlign::TOP_LEFT, "%.0f°F", id(forecast_low1).state);
       }
-    it.print(25, 500, id(font_wi_96), COLOR_OFF, TextAlign::CENTER_LEFT, weather_icon_map[id(forecast1).state.c_str()].c_str());
+    it.print(25, 500, id(font_wi_96), color_fg, TextAlign::CENTER_LEFT, weather_icon_map[id(forecast1).state.c_str()].c_str());
     if (isfinite(id(forecast_temp2).state)) {
-        it.printf(180, 660, id(font_roboto_48), COLOR_OFF, TextAlign::BOTTOM_LEFT, "%.0f°F", id(forecast_temp2).state);
+        it.printf(180, 660, id(font_roboto_48), color_fg, TextAlign::BOTTOM_LEFT, "%.0f°F", id(forecast_temp2).state);
       }
     if (isfinite(id(forecast_low2).state)) {
-        it.printf(180, 660, id(font_roboto_48), COLOR_OFF, TextAlign::TOP_LEFT, "%.0f°F", id(forecast_low2).state);
+        it.printf(180, 660, id(font_roboto_48), color_fg, TextAlign::TOP_LEFT, "%.0f°F", id(forecast_low2).state);
       }
-    it.print(25, 670, id(font_wi_96), COLOR_OFF, TextAlign::CENTER_LEFT, weather_icon_map[id(forecast2).state.c_str()].c_str());
+    it.print(25, 670, id(font_wi_96), color_fg, TextAlign::CENTER_LEFT, weather_icon_map[id(forecast2).state.c_str()].c_str());
 
-    it.printf(590, 795, id(font_roboto_36), COLOR_OFF, TextAlign::BOTTOM_RIGHT, "%.0f%%", id(battery_percentage).state);
-    it.strftime(10, 795, id(font_roboto_28), COLOR_OFF, TextAlign::BOTTOM_LEFT, "Updated %d %b %Y %H:%M %Z", id(esptime).now());
+    it.printf(590, 795, id(font_roboto_36), color_fg, TextAlign::BOTTOM_RIGHT, "%.0f%%", id(battery_percentage).state);
+    it.strftime(10, 795, id(font_roboto_28), color_fg, TextAlign::BOTTOM_LEFT, "Updated %d %b %Y %H:%M %Z", id(esptime).now());
 
 deep_sleep:
   sleep_duration: ${short_sleep_time}

@@ -273,7 +273,7 @@ script:
   - id: data_received
     then:
       - component.update: inkplate_display
-      - script.execute: enter_sleep
+      - script.execute: sleep_or_wait
   - id: enter_sleep
     then:
       if:
@@ -289,6 +289,15 @@ script:
           - deep_sleep.enter:
               id: deep_sleep_1
               sleep_duration: ${short_sleep_time}
+  - id: sleep_or_wait
+    then:
+      if:
+        condition:
+          lambda: "return id(battery_voltage).state <= ${voltage_high};"
+        then:
+          - script.execute: enter_sleep
+        else:
+          - delay: ${short_sleep_time}
 
 display:
 - platform: inkplate6

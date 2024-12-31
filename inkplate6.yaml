@@ -20,6 +20,8 @@ globals:
 substitutions:
   short_sleep_time: 9min
   long_sleep_time: 60min
+  voltage_high: "4.22"
+  voltage_low: "3.35"
 
 i2c:
 
@@ -255,8 +257,8 @@ sensor:
       - calibrate_linear:
          method: least_squares
          datapoints:
-          - 3.35 -> 0.0
-          - 4.22 -> 100.0
+          - ${voltage_low} -> 0.0
+          - ${voltage_high} -> 100.0
       - median:
           window_size: 5
       - clamp:

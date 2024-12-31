@@ -18,7 +18,7 @@ globals:
     initial_value: "false"
 
 substitutions:
-  short_sleep_time: 5min
+  short_sleep_time: 9min
   long_sleep_time: 60min
 
 i2c:

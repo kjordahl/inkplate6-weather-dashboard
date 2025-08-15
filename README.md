@@ -6,7 +6,7 @@ to display a real-time weather dashboard. I used an
 from [Soldered](https://soldered.com), but any display supported by
 ESPHome should be very similar.
 
-<img src="https://github.com/kjordahl/inkplate6-weather-dashboard/blob/main/images/example.jpg" width="400">
+<img src="images/example.jpg" width="400">
 
 ## Requirements
 
